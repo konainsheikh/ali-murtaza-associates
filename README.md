@@ -6,6 +6,8 @@ This AMA rebuild is a single-page marketing site for a Karachi/Lahore woven appa
 
 The current motion system is deliberately restrained: reveal transitions are short and subtle, the hero uses a static factory image rather than scroll parallax, and metric counters are static to avoid repeated scroll-time state updates. This keeps the long page responsive on lower-powered devices.
 
+The contact section posts JSON to `POST /api/contact`. The server validates the enquiry and sends a formatted HTML email through Resend to `CONTACT_RECIPIENT_EMAIL` (default `marketing@alimurtaza.com`), using `CONTACT_SENDER_EMAIL` as the verified sender and the visitor's email as `reply_to`.
+
 <!-- Documentation for this specific project goes here. This will include both an articulation of what this project aims to accomplish as well as technical details about how it works. This means explaining the purpose of the project as a whole along with an overview of the design choices. -->
 
 ---

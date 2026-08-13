@@ -16,6 +16,43 @@ const mode: Mode =
  */
 app.get("/api/hello-zo", (c) => c.json({ msg: "Hello from Zo" }));
 
+app.post("/api/contact", async (c) => {
+  const body = await c.req.json().catch(() => null) as { name?: string; company?: string; email?: string; message?: string } | null;
+  const name = body?.name?.trim();
+  const company = body?.company?.trim();
+  const email = body?.email?.trim();
+  const message = body?.message?.trim();
+
+  if (!name || !email || !message || !email.includes("@")) {
+    return c.json({ error: "Please provide your name, a valid email and a project brief." }, 400);
+  }
+
+  const resendApiKey = process.env.RESEND_API_KEY;
+  const recipient = process.env.CONTACT_RECIPIENT_EMAIL || "marketing@alimurtaza.com";
+  const sender = process.env.CONTACT_SENDER_EMAIL || "website@alimurtaza.com";
+
+  if (!resendApiKey) {
+    return c.json({ error: "Email delivery is not configured yet." }, 503);
+  }
+
+  const submittedAt = new Date().toLocaleString("en-PK", { timeZone: "Asia/Karachi", dateStyle: "medium", timeStyle: "short" });
+  const safe = (value: string) => value.replace(/[&<>\"]/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[char] || char));
+  const html = `<div style="font-family:Arial,sans-serif;max-width:640px;color:#252525"><h2 style="margin-bottom:24px">New website enquiry</h2><p><strong>Name:</strong> ${safe(name)}</p><p><strong>Company:</strong> ${safe(company || "Not provided")}</p><p><strong>Email:</strong> ${safe(email)}</p><p><strong>Submitted:</strong> ${safe(submittedAt)} PKT</p><hr style="border:0;border-top:1px solid #ddd;margin:24px 0"><p style="white-space:pre-wrap;line-height:1.6">${safe(message)}</p></div>`;
+
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${resendApiKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ from: `AMA Website <${sender}>`, to: [recipient], reply_to: email, subject: `Website enquiry from ${name}${company ? ` — ${company}` : ""}`, html }),
+  });
+
+  if (!response.ok) {
+    console.error("Contact email delivery failed:", response.status, await response.text());
+    return c.json({ error: "We could not send your enquiry right now. Please email marketing@alimurtaza.com directly." }, 502);
+  }
+
+  return c.json({ sent: true });
+});
+
 if (mode === "production") {
   configureProduction(app);
 } else {
