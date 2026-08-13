@@ -2,6 +2,10 @@ This file provides guidance when working with code in this repository. The READM
 
 # Project Notes
 
+This AMA rebuild is a single-page marketing site for a Karachi/Lahore woven apparel manufacturer established in 1986. It uses local image assets sourced from the original Ali Murtaza website for the hero, factory and quality-control sections, plus the original site's product-gallery imagery for denim, chinos, shorts and outerwear. The gallery is intentionally product-led and opens images in a lightweight modal.
+
+The current motion system is deliberately restrained: reveal transitions are short and subtle, the hero uses a static factory image rather than scroll parallax, and metric counters are static to avoid repeated scroll-time state updates. This keeps the long page responsive on lower-powered devices.
+
 <!-- Documentation for this specific project goes here. This will include both an articulation of what this project aims to accomplish as well as technical details about how it works. This means explaining the purpose of the project as a whole along with an overview of the design choices. -->
 
 ---
