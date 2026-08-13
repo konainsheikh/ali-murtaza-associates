@@ -1,0 +1,15 @@
+{
+  "name": "ali-murtaza-associates",
+  "local_port": 52985,
+  "entrypoint": "bun run dev",
+  "publish": {
+    "label": "ali-murtaza-associates",
+    "type": "http",
+    "entrypoint": "bun run prod",
+    "published_port": 51812,
+    "env": {
+      "NODE_ENV": "production",
+      "ZO_CLIENT_IDENTITY_TOKEN": "none"
+    }
+  }
+}
